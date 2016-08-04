@@ -1,0 +1,19 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    benchmark-ips (2.6.1)
+    json (2.0.2)
+    msgpack (1.0.0)
+    oj (2.17.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  benchmark-ips
+  json
+  msgpack
+  oj
+
+BUNDLED WITH
+   1.12.5

@@ -4,17 +4,20 @@ require 'bundler'
 Bundler.setup
 
 require 'benchmark/ips'
+require 'terminal-table'
 
 require 'json'
 require 'msgpack'
 require 'oj'
 
 SAMPLE = {
-  array: ['a', 'b', 'c'].freeze,
+  array: %w(a b c').freeze,
+  boolean: true,
   fixnum: 123,
   float: 123.456,
-  hash: { key: 'value' }.freeze,
-  string: 'string'.freeze,
+  hash: { 'key' => 'value' }.freeze,
+  null: nil,
+  string: 'string',
   symbol: :symbol
 }.freeze
 
@@ -39,6 +42,41 @@ serializers << {
   serialize: ->(v) { MessagePack.pack(v) },
   deserialize: ->(v) { MessagePack.unpack(v) }
 }
+
+puts '### Serializer Samples #########################'
+value = { 'k1' => 'v', 'k2' => [1, 2] }
+results = []
+results << ['Original', '', '', '', value.to_s, '']
+serializers.each do |name:, serialize:, deserialize:|
+  serialized_value = serialize.call(value)
+  deserialized_value = deserialize.call(serialized_value)
+  unsupport_types = []
+  SAMPLE.each do |k, v|
+    unsupport_types << k unless v == deserialize.call(serialize.call(v))
+  end
+  results << [
+    name,
+    serialized_value.gsub(/[^[:print:]]/, '?'),
+    serialized_value.dump,
+    serialized_value.bytesize,
+    deserialized_value.to_s,
+    unsupport_types.join(', ')
+  ]
+end
+result_table = Terminal::Table.new(
+  headings: [
+    'Name',
+    'Serialized',
+    'Serialized(dump)',
+    'Serialized(bytes)',
+    'Deserialized',
+    'Unsupport types'
+  ],
+  rows: results
+)
+result_table.align_column(3, :right)
+puts result_table
+puts ''
 
 puts '### Serialize Benchmark #########################'
 Benchmark.ips do |x|

@@ -2,9 +2,17 @@ GEM
   remote: https://rubygems.org/
   specs:
     benchmark-ips (2.6.1)
+    coderay (1.1.1)
     json (2.0.2)
+    method_source (0.8.2)
     msgpack (1.0.0)
     oj (2.17.1)
+    pry (0.10.4)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    slop (3.6.0)
+    terminal-table (1.6.0)
 
 PLATFORMS
   ruby
@@ -14,6 +22,8 @@ DEPENDENCIES
   json
   msgpack
   oj
+  pry
+  terminal-table
 
 BUNDLED WITH
    1.12.5
